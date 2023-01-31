@@ -61,6 +61,9 @@ router.get("/", (req, res, next) => {
   });
 });
 
+/*********************MAIN ROUTES***********************/
+
+//GET ALL BLOGS
 router.get("/all", (req, res, next) => {
   res.json({
     sucess: true,
@@ -68,6 +71,7 @@ router.get("/all", (req, res, next) => {
   });
 });
 
+//GET SINGLE BLOG
 router.get("/single/:titleToGet", (req, res) => {
   let titleToFind = req.params.titleToGet;
 
@@ -75,12 +79,20 @@ router.get("/single/:titleToGet", (req, res) => {
     return t.title === titleToFind;
   });
 
+  if (!foundTitle) {
+    res.json({
+      success: false,
+      message: "Title does not exist!",
+    });
+  }
+
   res.json({
-    success: true,
+    success: `${titleToFind} found!`,
     foundTitle: foundTitle,
   });
 });
 
+//DELETE BLOG
 router.delete("/single/:blogTitleToDelete", (req, res) => {
   let titleToFind = req.params.blogTitleToDelete;
 
@@ -91,8 +103,7 @@ router.delete("/single/:blogTitleToDelete", (req, res) => {
   sampleBlogs.splice(foundTitle, 1);
 
   res.json({
-    success: true,
-    // foundTitle: foundTitle,
+    success: `${titleToFind} deleted!`,
   });
 });
 

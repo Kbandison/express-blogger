@@ -1,6 +1,7 @@
 var express = require("express");
 const app = require("../app");
 var router = express.Router();
+// var { validateBlogData } = require("../validation/blogs");
 
 const sampleBlogs = [
   {
@@ -74,21 +75,83 @@ router.get("/all", (req, res, next) => {
 //GET SINGLE BLOG
 router.get("/single/:titleToGet", (req, res) => {
   let titleToFind = req.params.titleToGet;
+  console.log(req.params);
 
-  let foundTitle = sampleBlogs.find((t) => {
-    return t.title === titleToFind;
-  });
+  let foundTitle = sampleBlogs.find((t) => t.title === titleToFind);
 
   if (!foundTitle) {
     res.json({
       success: false,
-      message: "Title does not exist!",
+      message: `${titleToFind} does not exist!`,
     });
   }
 
   res.json({
     success: `${titleToFind} found!`,
     foundTitle: foundTitle,
+  });
+});
+
+//ADD A BLOG
+router.post("/create-one", (req, res) => {
+  let newBlog = {};
+
+  req.body.title !== undefined
+    ? (newBlog.title = req.body.title)
+    : res.json({ success: false, message: "Title cannot be blank" });
+  req.body.text !== undefined
+    ? (newBlog.text = req.body.text)
+    : res.json({ success: false, message: "Text cannot be blank" });
+  req.body.author !== undefined
+    ? (newBlog.author = req.body.author)
+    : res.json({ success: false, message: "Author cannot be blank" });
+  req.body.category !== undefined
+    ? (newBlog.category = req.body.category)
+    : res.json({ success: false, message: "Categories cannot be blank" });
+
+  sampleBlogs.push(newBlog);
+
+  res.json({
+    success: true,
+  });
+});
+
+//UPDATE A BLOG
+router.put("/update-one/:blogTitle", (req, res) => {
+  let blogTitle = req.params.blogTitle;
+
+  let foundTitle = sampleBlogs.find((blog) => blog.title === blogTitle);
+
+  let foundTitleIndex = sampleBlogs.findIndex(
+    (blog) => blog.title === blogTitle
+  );
+
+  if (!foundTitle) {
+    res.json({ success: false, message: `${blogTitle} does not exist!` });
+  }
+
+  let newBlog = {};
+
+  req.body.title !== undefined
+    ? (newBlog.title = req.body.title)
+    : (newBlog.title = foundTitle.title);
+  req.body.text !== undefined
+    ? (newBlog.text = req.body.text)
+    : (newBlog.text = foundTitle.text);
+  req.body.author !== undefined
+    ? (newBlog.author = req.body.author)
+    : (newBlog.author = foundTitle.author);
+  req.body.category !== undefined
+    ? (newBlog.category = req.body.category)
+    : (newBlog.category = foundTitle.category);
+
+  newBlog.createAt = foundTitle.createdAt;
+  newBlog.lastModified = new Date();
+
+  sampleBlogs[foundTitleIndex] = newBlog;
+
+  res.json({
+    success: true,
   });
 });
 

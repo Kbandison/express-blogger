@@ -36,6 +36,10 @@ const validateBlogData = (blogData) => {
       message: "Category is required and needs to be a string",
     };
   }
+
+  return {
+    isValid: true,
+  };
 };
 
 module.exports = { validateBlogData };

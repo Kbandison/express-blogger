@@ -1,7 +1,7 @@
 var express = require("express");
 const app = require("../app");
 var router = express.Router();
-// var { validateBlogData } = require("../validation/blogs");
+var { validateBlogData } = require("./validation/blogs");
 
 const sampleBlogs = [
   {
@@ -94,22 +94,36 @@ router.get("/single/:titleToGet", (req, res) => {
 
 //ADD A BLOG
 router.post("/create-one", (req, res) => {
-  let newBlog = {};
+  try {
+    let newBlog = {};
 
-  req.body.title !== undefined
-    ? (newBlog.title = req.body.title)
-    : res.json({ success: false, message: "Title cannot be blank" });
-  req.body.text !== undefined
-    ? (newBlog.text = req.body.text)
-    : res.json({ success: false, message: "Text cannot be blank" });
-  req.body.author !== undefined
-    ? (newBlog.author = req.body.author)
-    : res.json({ success: false, message: "Author cannot be blank" });
-  req.body.category !== undefined
-    ? (newBlog.category = req.body.category)
-    : res.json({ success: false, message: "Categories cannot be blank" });
+    req.body.title !== undefined
+      ? (newBlog.title = req.body.title)
+      : res.json({ success: false, message: "Title cannot be blank" });
+    req.body.text !== undefined
+      ? (newBlog.text = req.body.text)
+      : res.json({ success: false, message: "Text cannot be blank" });
+    req.body.author !== undefined
+      ? (newBlog.author = req.body.author)
+      : res.json({ success: false, message: "Author cannot be blank" });
+    req.body.category !== undefined
+      ? (newBlog.category = req.body.category)
+      : res.json({ success: false, message: "Categories cannot be blank" });
 
-  sampleBlogs.push(newBlog);
+    let blogDataCheck = validateBlogData(newBlog);
+
+    if (blogDataCheck.isValid === false) {
+      throw Error(blogDataCheck.message);
+    }
+
+    sampleBlogs.push(newBlog);
+  } catch (error) {
+    console.log(error);
+    res.json({
+      success: false,
+      error: String(error),
+    });
+  }
 
   res.json({
     success: true,

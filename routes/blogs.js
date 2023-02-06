@@ -174,7 +174,7 @@ router.delete("/single/:blogTitleToDelete", (req, res) => {
   let titleToFind = req.params.blogTitleToDelete;
 
   let foundTitle = sampleBlogs.findIndex((d) => {
-    return d.blogTitle === titleToFind;
+    return d.title === titleToFind;
   });
 
   sampleBlogs.splice(foundTitle, 1);

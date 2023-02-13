@@ -3,6 +3,7 @@ const app = require("../app");
 var router = express.Router();
 var { validateBlogData } = require("./validation/blogs");
 const { db } = require("../mongo");
+const { v4: uuidv4 } = require("uuid");
 
 /* GET users listing. */
 router.get("/", (req, res, next) => {
@@ -115,6 +116,7 @@ router.post("/create-one", async (req, res, next) => {
     author: req.body.author,
     lastModified: new Date(),
     categories: req.body.category,
+    id: uuidv4(),
   };
 
   await db()

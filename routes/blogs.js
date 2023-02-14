@@ -63,12 +63,12 @@ router.get("/single", async (req, res, next) => {
 });
 
 //GET SINGLE BLOG BY TITLE *DONE*
-router.get("/single/:title", async (req, res) => {
-  let titleToFind = { title: req.params.title };
+router.get("/single/:id", async (req, res) => {
+  let idToFind = { id: req.params.id };
 
   const blog = await db()
     .collection("sample_blogs")
-    .findOne(titleToFind, function (err, result) {
+    .findOne(idToFind, function (err, result) {
       if (err) {
         res.status(400).send("error fetching blogs");
       } else {
@@ -84,13 +84,14 @@ router.get("/single/:title", async (req, res) => {
   });
 });
 
-//GET MANY BLOGS BY TITLE *DONE*
+//GET MANY BLOGS *DONE*
 router.get("/many/:title", async (req, res) => {
   let titleToFind = { title: req.params.title };
 
   const blog = await db()
     .collection("sample_blogs")
     .find(titleToFind)
+    .sort()
     .toArray(function (err, result) {
       if (err) {
         res.status(400).send("error fetching blogs");
@@ -98,8 +99,6 @@ router.get("/many/:title", async (req, res) => {
         res.json(result);
       }
     });
-
-  console.log(blog);
 
   res.json({
     sucess: true,

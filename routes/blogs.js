@@ -1,253 +1,295 @@
-// var express = require("express");
-// const app = require("../app");
-// var router = express.Router();
-// var { validateBlogData } = require("./validation/blogs");
+var express = require("express");
+const app = require("../app");
+var router = express.Router();
+var { validateBlogData } = require("./validation/blogs");
 // const { db } = require("../mongo");
-// const { v4: uuidv4 } = require("uuid");
+const Blog = require("../models/Blogs");
+const { v4: uuidv4 } = require("uuid");
 
-// /* GET users listing. */
-// router.get("/", (req, res, next) => {
-//   res.json({
-//     success: true,
-//   });
-// });
+/* GET users listing. */
+router.get("/", (req, res, next) => {
+  res.json({
+    success: true,
+  });
+});
 
-// /* GET blogs default */
-// router.get("/", (req, res, next) => {
-//   res.json({
-//     success: true,
-//     route: "blogs",
-//     message: "hello from the blogs default route",
-//   });
-// });
+/* GET blogs default */
+router.get("/", (req, res, next) => {
+  res.json({
+    success: true,
+    route: "blogs",
+    message: "hello from the blogs default route",
+  });
+});
 
-// /*********************MAIN ROUTES***********************/
+/*********************MAIN ROUTES***********************/
 
-// //GET ALL BLOGS *DONE*
-// router.get("/all", async (req, res, next) => {
-//   const blogs = await db()
-//     .collection("sample_blogs")
-//     .find({})
-//     .toArray(function (err, result) {
-//       if (err) {
-//         res.status(400).send("error fetching blogs");
-//       } else {
-//         res.json(result);
-//       }
-//     });
+//GET ALL BLOGS *DONE*
+router.get("/all", async (req, res, next) => {
+  // const blogs = await db()
+  //   .collection("sample_blogs")
+  //   .find({})
+  //   .toArray(function (err, result) {
+  //     if (err) {
+  //       res.status(400).send("error fetching blogs");
+  //     } else {
+  //       res.json(result);
+  //     }
+  //   });
 
-//   res.json({
-//     sucess: true,
-//     blogs: blogs,
-//   });
-// });
+  // res.json({
+  //   sucess: true,
+  //   blogs: blogs,
+  // });
 
-// // GET A SINGLE BLOG *DONE*
-// router.get("/single", async (req, res, next) => {
-//   const blogs = await db()
-//     .collection("sample_blogs")
-//     .findOne({
-//       function(err, result) {
-//         if (err) {
-//           res.status(400).send("error fetching blogs");
-//         } else {
-//           res.json(result);
-//         }
-//       },
-//     });
+  try {
+    const allBlogs = await Blog.find({});
+    res.json({ blogs: allBlogs });
+  } catch (e) {
+    console.log(e);
+  }
+});
 
-//   res.json({
-//     sucess: true,
-//     blogs: blogs,
-//   });
-// });
+// GET A SINGLE BLOG *DONE*
+router.get("/single", async (req, res, next) => {
+  const blogs = await db()
+    .collection("sample_blogs")
+    .findOne({
+      function(err, result) {
+        if (err) {
+          res.status(400).send("error fetching blogs");
+        } else {
+          res.json(result);
+        }
+      },
+    });
 
-// //GET SINGLE BLOG BY TITLE *DONE*
-// router.get("/single/:id", async (req, res) => {
-//   let idToFind = { id: req.params.id };
+  res.json({
+    sucess: true,
+    blogs: blogs,
+  });
+});
 
-//   const blog = await db()
-//     .collection("sample_blogs")
-//     .findOne(idToFind, function (err, result) {
-//       if (err) {
-//         res.status(400).send("error fetching blogs");
-//       } else {
-//         res.json(result);
-//       }
-//     });
+//GET SINGLE BLOG BY TITLE *DONE*
+router.get("/single/:id", async (req, res) => {
+  let idToFind = { id: req.params.id };
 
-//   console.log(blog);
+  const blog = await db()
+    .collection("sample_blogs")
+    .findOne(idToFind, function (err, result) {
+      if (err) {
+        res.status(400).send("error fetching blogs");
+      } else {
+        res.json(result);
+      }
+    });
 
-//   res.json({
-//     sucess: true,
-//     blog: blog,
-//   });
-// });
+  console.log(blog);
 
-// //GET MANY BLOGS *DONE*
-// router.get("/many/:title", async (req, res) => {
-//   let titleToFind = { title: req.params.title };
+  res.json({
+    sucess: true,
+    blog: blog,
+  });
+});
 
-//   const blog = await db()
-//     .collection("sample_blogs")
-//     .find(titleToFind)
-//     .sort()
-//     .toArray(function (err, result) {
-//       if (err) {
-//         res.status(400).send("error fetching blogs");
-//       } else {
-//         res.json(result);
-//       }
-//     });
+//GET MANY BLOGS *DONE*
+router.get("/many/:title", async (req, res) => {
+  let titleToFind = { title: req.params.title };
 
-//   res.json({
-//     sucess: true,
-//     blog: blog,
-//   });
-// });
+  const blog = await db()
+    .collection("sample_blogs")
+    .find(titleToFind)
+    .sort()
+    .toArray(function (err, result) {
+      if (err) {
+        res.status(400).send("error fetching blogs");
+      } else {
+        res.json(result);
+      }
+    });
 
-// //ADD A BLOG *DONE*
-// router.post("/create-one", async (req, res, next) => {
-//   const matchDocument = {
-//     createdAt: new Date(),
-//     title: req.body.title,
-//     text: req.body.text,
-//     author: req.body.author,
-//     lastModified: new Date(),
-//     categories: req.body.category,
-//     id: uuidv4(),
-//   };
+  res.json({
+    sucess: true,
+    blog: blog,
+  });
+});
 
-//   await db()
-//     .collection("sample_blogs")
-//     .insertOne(matchDocument, function (err, result) {
-//       if (err) {
-//         res.status(400).send("Error inserting blog!");
-//       } else {
-//         console.log(`Added a new blog with id ${result.insertedId}`);
-//         res.status(204).send();
-//       }
-//     });
+//ADD A BLOG *DONE*
+router.post("/create-one", async (req, res, next) => {
+  // const matchDocument = {
+  //   createdAt: new Date(),
+  //   title: req.body.title,
+  //   text: req.body.text,
+  //   author: req.body.author,
+  //   lastModified: new Date(),
+  //   categories: req.body.category,
+  //   id: uuidv4(),
+  // };
 
-//   res.json({
-//     success: true,
-//   });
-// });
+  // await db()
+  //   .collection("sample_blogs")
+  //   .insertOne(matchDocument, function (err, result) {
+  //     if (err) {
+  //       res.status(400).send("Error inserting blog!");
+  //     } else {
+  //       console.log(`Added a new blog with id ${result.insertedId}`);
+  //       res.status(204).send();
+  //     }
+  //   });
 
-// // //UPDATE A BLOG
-// router.put("/update-one/:blogToUpdate", async (req, res) => {
-//   try {
-//     const blogToFind = req.params.blogToUpdate;
+  // res.json({
+  //   success: true,
+  // });
 
-//     const originalBlog = await db().collection("sample_blogs").findOne({
-//       title: blogToFind,
-//     });
+  try {
+    //parse out fields from POST request
+    const title = req.body.title;
+    const text = req.body.text;
+    const author = req.body.author;
+    const categories = req.body.category;
+    const year = req.body.year;
 
-//     if (!originalBlog) {
-//       res.json({
-//         success: false,
-//         message: "Could not find blog in the list",
-//       });
-//       return;
-//     }
+    //pass fields to new Blog model
+    //notice how it's way more organized and does the type checking for us
+    const newBlog = new Blog({
+      title,
+      text,
+      author,
+      categories,
+      year,
+    });
 
-//     const updatedBlog = {};
+    //save our new entry to the database
+    const savedData = await newBlog.save();
 
-//     if (req.body.title !== undefined) {
-//       updatedBlog.title = req.body.title;
-//     } else {
-//       updatedBlog.title = originalBlog.title;
-//     }
+    //return the successful request to the user
+    res.json({
+      success: true,
+      blogs: savedData,
+    });
+  } catch (error) {
+    console.log(typeof e);
+    console.log(e);
+    res.json({
+      error: e.toString(),
+    });
+  }
+});
 
-//     if (req.body.text !== undefined) {
-//       updatedBlog.text = req.body.text;
-//     } else {
-//       updatedBlog.text = originalBlog.text;
-//     }
+// //UPDATE A BLOG
+router.put("/update-one/:blogToUpdate", async (req, res) => {
+  try {
+    const blogToFind = req.params.blogToUpdate;
 
-//     if (req.body.author !== undefined) {
-//       updatedBlog.author = req.body.author;
-//     } else {
-//       updatedBlog.author = originalBlog.author;
-//     }
+    const originalBlog = await db().collection("sample_blogs").findOne({
+      title: blogToFind,
+    });
 
-//     if (req.body.category !== undefined) {
-//       updatedBlog.category = req.body.category;
-//     } else {
-//       updatedBlog.category = originalBlog.category;
-//     }
+    if (!originalBlog) {
+      res.json({
+        success: false,
+        message: "Could not find blog in the list",
+      });
+      return;
+    }
 
-//     updatedBlog.createdAt = new Date();
-//     updatedBlog.lastModified = new Date();
+    const updatedBlog = {};
 
-//     const updateResponse = await db().collection("sample_blogs").updateOne(
-//       {
-//         title: blogToFind,
-//       },
-//       {
-//         $set: updatedBlog,
-//       }
-//     );
+    if (req.body.title !== undefined) {
+      updatedBlog.title = req.body.title;
+    } else {
+      updatedBlog.title = originalBlog.title;
+    }
 
-//     res
-//       .json({
-//         success: true,
-//         updatedBlog,
-//       })
-//       .status(200);
-//   } catch (e) {
-//     console.log(e);
-//     res
-//       .json({
-//         success: false,
-//         error: String(e),
-//       })
-//       .status(500);
-//   }
-// });
+    if (req.body.text !== undefined) {
+      updatedBlog.text = req.body.text;
+    } else {
+      updatedBlog.text = originalBlog.text;
+    }
 
-// //DELETE BLOG *DONE*
-// router.delete("/single/:blogTitle", async (req, res) => {
-//   let titleToDelete = { title: req.params.blogTitle };
+    if (req.body.author !== undefined) {
+      updatedBlog.author = req.body.author;
+    } else {
+      updatedBlog.author = originalBlog.author;
+    }
 
-//   await db()
-//     .collection("sample_blogs")
-//     .deleteOne(titleToDelete, (err, _result) => {
-//       if (err) {
-//         res
-//           .status(400)
-//           .send(`Error deleting listing with id ${titleToDelete.id}!`);
-//       } else {
-//         console.log("Blog deleted successfully");
-//         res.status(200).send(`${titleToDelete.id} deleted successfully`);
-//       }
-//     });
+    if (req.body.category !== undefined) {
+      updatedBlog.category = req.body.category;
+    } else {
+      updatedBlog.category = originalBlog.category;
+    }
 
-//   res.json({
-//     success: true,
-//   });
-// });
+    updatedBlog.createdAt = new Date();
+    updatedBlog.lastModified = new Date();
 
-// //DELETE MULTIPLE BLOGS *DONE*
-// router.delete("/many/:blogTitle", async (req, res) => {
-//   let titleToDelete = { title: req.params.blogTitle };
+    const updateResponse = await db().collection("sample_blogs").updateOne(
+      {
+        title: blogToFind,
+      },
+      {
+        $set: updatedBlog,
+      }
+    );
 
-//   await db()
-//     .collection("sample_blogs")
-//     .deleteMany(titleToDelete, (err, _result) => {
-//       if (err) {
-//         res
-//           .status(400)
-//           .send(`Error deleting listing with id ${titleToDelete.id}!`);
-//       } else {
-//         console.log("Blog deleted successfully");
-//         res.status(200).send(`${titleToDelete.id} deleted successfully`);
-//       }
-//     });
+    res
+      .json({
+        success: true,
+        updatedBlog,
+      })
+      .status(200);
+  } catch (e) {
+    console.log(e);
+    res
+      .json({
+        success: false,
+        error: String(e),
+      })
+      .status(500);
+  }
+});
 
-//   res.json({
-//     success: true,
-//   });
-// });
+//DELETE BLOG *DONE*
+router.delete("/single/:blogTitle", async (req, res) => {
+  let titleToDelete = { title: req.params.blogTitle };
 
-// module.exports = router;
+  await db()
+    .collection("sample_blogs")
+    .deleteOne(titleToDelete, (err, _result) => {
+      if (err) {
+        res
+          .status(400)
+          .send(`Error deleting listing with id ${titleToDelete.id}!`);
+      } else {
+        console.log("Blog deleted successfully");
+        res.status(200).send(`${titleToDelete.id} deleted successfully`);
+      }
+    });
+
+  res.json({
+    success: true,
+  });
+});
+
+//DELETE MULTIPLE BLOGS *DONE*
+router.delete("/many/:blogTitle", async (req, res) => {
+  let titleToDelete = { title: req.params.blogTitle };
+
+  await db()
+    .collection("sample_blogs")
+    .deleteMany(titleToDelete, (err, _result) => {
+      if (err) {
+        res
+          .status(400)
+          .send(`Error deleting listing with id ${titleToDelete.id}!`);
+      } else {
+        console.log("Blog deleted successfully");
+        res.status(200).send(`${titleToDelete.id} deleted successfully`);
+      }
+    });
+
+  res.json({
+    success: true,
+  });
+});
+
+module.exports = router;

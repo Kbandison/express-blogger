@@ -39,7 +39,7 @@ app.use(express.static(path.join(__dirname, "public")));
 //we bind (associate) the routers to routes in our application
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
-// app.use("/blogs", blogsRouter);
+app.use("/blogs", blogsRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

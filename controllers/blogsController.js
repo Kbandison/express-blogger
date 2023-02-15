@@ -46,80 +46,112 @@ let createOneBlog = async (req, res) => {
 };
 
 let findOne = async (req, res) => {
-  let blog = await Blog.findOne().exec();
+  try {
+    let blog = await Blog.findOne().exec();
 
-  res.json({
-    success: true,
-    blog: blog,
-  });
+    res.json({
+      success: true,
+      blog: blog,
+    });
+  } catch (error) {
+    console.log(error);
+    res.json({
+      success: false,
+      message: error.message,
+    });
+  }
 };
 
 let findOneById = async (req, res) => {
-  let blog = await Blog.findOne({ id: req.params.id }).exec();
+  try {
+    let blog = await Blog.findOne({ id: req.params.id }).exec();
 
-  res.json({
-    success: true,
-    blog: blog,
-  });
+    res.json({
+      success: true,
+      blog: blog,
+    });
+  } catch (error) {
+    console.log(error);
+    res.json({
+      success: false,
+      message: error.message,
+    });
+  }
 };
 
 let deleteOneById = async (req, res) => {
-  await Blog.deleteOne({ id: req.params.id });
+  try {
+    await Blog.deleteOne({ id: req.params.id });
 
-  res.json({ success: true });
+    res.json({ success: true });
+  } catch (error) {
+    console.log(error);
+    res.json({
+      success: false,
+      message: error.message,
+    });
+  }
 };
 
 let updateOneById = async (req, res) => {
-  let originalBlog = await Blog.findOne({ id: req.params.id });
+  try {
+    let originalBlog = await Blog.findOne({ id: req.params.id });
 
-  if (!originalBlog) {
+    if (!originalBlog) {
+      res.json({
+        success: false,
+        message: "Blog could not be found!",
+      });
+    }
+
+    let updatedBlog = {};
+
+    if (req.body.title === undefined) {
+      updatedBlog.title = originalBlog.title;
+    } else {
+      updatedBlog.title = req.body.title;
+    }
+
+    if (req.body.text === undefined) {
+      updatedBlog.text = originalBlog.text;
+    } else {
+      updatedBlog.text = req.body.text;
+    }
+
+    if (req.body.author === undefined) {
+      updatedBlog.author = originalBlog.author;
+    } else {
+      updatedBlog.author = req.body.author;
+    }
+
+    if (req.body.year === undefined) {
+      updatedBlog.year = originalBlog.year;
+    } else {
+      updatedBlog.year = req.body.year;
+    }
+
+    if (req.body.categories === undefined) {
+      updatedBlog.categories = originalBlog.categories;
+    } else {
+      updatedBlog.categories = req.body.categories;
+    }
+
+    updatedBlog.id = originalBlog.id;
+    updatedBlog.createdAt = originalBlog.createdAt;
+
+    await Blog.updateOne(originalBlog, updatedBlog);
+
+    res.json({
+      success: true,
+      blog: updatedBlog,
+    });
+  } catch (error) {
+    console.log(error);
     res.json({
       success: false,
-      message: "Blog could not be found!",
+      message: error.message,
     });
   }
-
-  let updatedBlog = {};
-
-  if (req.body.title === undefined) {
-    updatedBlog.title = originalBlog.title;
-  } else {
-    updatedBlog.title = req.body.title;
-  }
-
-  if (req.body.text === undefined) {
-    updatedBlog.text = originalBlog.text;
-  } else {
-    updatedBlog.text = req.body.text;
-  }
-
-  if (req.body.author === undefined) {
-    updatedBlog.author = originalBlog.author;
-  } else {
-    updatedBlog.author = req.body.author;
-  }
-
-  if (req.body.year === undefined) {
-    updatedBlog.year = originalBlog.year;
-  } else {
-    updatedBlog.year = req.body.year;
-  }
-
-  if (req.body.categories === undefined) {
-    updatedBlog.categories = originalBlog.categories;
-  } else {
-    updatedBlog.categories = req.body.categories;
-  }
-
-  updatedBlog.id = originalBlog.id;
-  updatedBlog.createdAt = originalBlog.createdAt;
-
-  await Blog.updateOne(originalBlog, updatedBlog);
-
-  res.json({
-    success: true,
-    blog: updatedBlog,
-  });
 };
 
 module.exports = {

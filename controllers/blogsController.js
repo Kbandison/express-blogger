@@ -47,7 +47,7 @@ let createOneBlog = async (req, res) => {
 
 let findOne = async (req, res) => {
   try {
-    let blog = await Blog.findOne().exec();
+    let blog = await Blog.findOne();
 
     res.json({
       success: true,
@@ -64,7 +64,7 @@ let findOne = async (req, res) => {
 
 let findOneById = async (req, res) => {
   try {
-    let blog = await Blog.findOne({ id: req.params.id }).exec();
+    let blog = await Blog.findOne({ id: req.params.id });
 
     res.json({
       success: true,

@@ -58,7 +58,7 @@ router.get("/many/:title", async (req, res) => {
 router.post("/create-one", blogsController.createOneBlog);
 
 // //UPDATE A BLOG
-router.post("/update-single/:id", blogsController.updateOneById);
+router.put("/update-single/:id", blogsController.updateOneById);
 
 //DELETE BLOG *DONE*
 router.delete("/delete-single/:id", blogsController.deleteOneById);

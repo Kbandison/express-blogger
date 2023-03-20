@@ -15,7 +15,7 @@ let createOneBlog = async (req, res) => {
     const title = req.body.title;
     const text = req.body.text;
     const author = req.body.author;
-    const categories = req.body.category;
+    const categories = req.body.categories.split(", ");
     const year = req.body.year;
 
     //pass fields to new Blog model
@@ -133,7 +133,7 @@ let updateOneById = async (req, res) => {
     if (req.body.categories === undefined) {
       updatedBlog.categories = originalBlog.categories;
     } else {
-      updatedBlog.categories = req.body.categories;
+      updatedBlog.categories = req.body.categories.split(", ");
     }
 
     updatedBlog.id = originalBlog.id;
@@ -154,6 +154,19 @@ let updateOneById = async (req, res) => {
   }
 };
 
+let deleteAllBlogs = async (req, res) => {
+  try {
+    await Blog.deleteMany({});
+    res.json({ success: true });
+  } catch (error) {
+    console.log(error);
+    res.json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
 module.exports = {
   getAllBlogs,
   createOneBlog,
@@ -161,4 +174,5 @@ module.exports = {
   findOneById,
   deleteOneById,
   updateOneById,
+  deleteAllBlogs,
 };

@@ -9,7 +9,7 @@ const blogSchema = new mongoose.Schema({
   author: String,
   year: Number,
   categories: [String],
-  id: { type: String, default: uuidv4() },
+  id: { type: String, default: uuidv4 },
   createdAt: { type: Date, default: Date.now },
 });
 

@@ -4,6 +4,7 @@ const express = require("express");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
+const cors = require("cors");
 
 //loads the contents of config.env
 require("dotenv").config({ path: "./config.env" });
@@ -19,6 +20,9 @@ const blogsRouter = require("./routes/blogs");
 
 //instantiate the actual express app
 const app = express();
+
+app.use(cors({ origin: true, credentials: true }));
+app.options("*", cors());
 
 // view engine setup
 // sets application settings. (things we can access across the application)

@@ -24,7 +24,7 @@ router.get("/", (req, res, next) => {
 /*********************MAIN ROUTES***********************/
 
 //GET ALL BLOGS *DONE*
-router.get("/all", blogsController.getAllBlogs);
+router.get("/", blogsController.getAllBlogs);
 
 // GET A SINGLE BLOG *DONE*
 router.get("/single", blogsController.findOne);
@@ -64,25 +64,6 @@ router.put("/update-single/:id", blogsController.updateOneById);
 router.delete("/delete-single/:id", blogsController.deleteOneById);
 
 //DELETE MULTIPLE BLOGS *DONE*
-router.delete("/many/:blogTitle", async (req, res) => {
-  let titleToDelete = { title: req.params.blogTitle };
-
-  await db()
-    .collection("sample_blogs")
-    .deleteMany(titleToDelete, (err, _result) => {
-      if (err) {
-        res
-          .status(400)
-          .send(`Error deleting listing with id ${titleToDelete.id}!`);
-      } else {
-        console.log("Blog deleted successfully");
-        res.status(200).send(`${titleToDelete.id} deleted successfully`);
-      }
-    });
-
-  res.json({
-    success: true,
-  });
-});
+router.delete("/delete-all", blogsController.deleteAllBlogs);
 
 module.exports = router;

@@ -24,7 +24,7 @@ router.get("/", (req, res, next) => {
 /*********************MAIN ROUTES***********************/
 
 //GET ALL BLOGS *DONE*
-router.get("/", blogsController.getAllBlogs);
+router.get("/blog-list", blogsController.getAllBlogs);
 
 // GET A SINGLE BLOG *DONE*
 router.get("/single", blogsController.findOne);

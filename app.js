@@ -14,7 +14,7 @@ mongooseConnect();
 
 //setup router for each set of routes
 // importing from routes/ folder
-const indexRouter = require("./routes/index");
+// const indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users");
 const blogsRouter = require("./routes/blogs");
 
@@ -41,7 +41,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
 //we bind (associate) the routers to routes in our application
-app.use("/", indexRouter);
+// app.use("/", indexRouter);
 app.use("/users", usersRouter);
 app.use("/blogs", blogsRouter);
 

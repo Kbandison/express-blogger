@@ -7,7 +7,7 @@ const mongoose = require("mongoose");
 mongoose.set("strictQuery", false);
 
 // Define the database URL to connect to.
-const mongoDB = process.env.ATLAS_URI;
+const mongoDB = process.env.MONGO_URI;
 
 // Wait for database to connect, logging an error if there is a problem
 // main().catch((err) => console.log(err));

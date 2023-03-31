@@ -1,9 +1,7 @@
 var express = require("express");
-const app = require("../app");
 var router = express.Router();
-var { validateBlogData } = require("./validation/blogs");
 const blogsController = require("../controllers/blogsController");
-// const { db } = require("../mongo");
+const { auth } = require("../Middleware/auth");
 
 /* GET users listing. */
 router.get("/", (req, res, next) => {
@@ -28,6 +26,9 @@ router.get("/blog-list", blogsController.getAllBlogs);
 
 // GET A SINGLE BLOG *DONE*
 router.get("/single", blogsController.findOne);
+
+// GET THE USER'S BLOG(S) *DONE*
+router.get("/user-blog", auth, blogsController.findUserBlog);
 
 //GET SINGLE BLOG BY TITLE *DONE*
 router.get("/single/:id", blogsController.findOneById);
@@ -55,15 +56,24 @@ router.get("/many/:title", async (req, res) => {
 });
 
 //ADD A BLOG *DONE*
-router.post("/create-one", blogsController.createOneBlog);
+router.post("/create-one", auth, blogsController.createOneBlog);
 
-// //UPDATE A BLOG
-router.put("/update-single/:id", blogsController.updateOneById);
+//UPDATE A BLOG
+router.put("/update-single/:id", auth, blogsController.updateOneById);
+
+//UPDATE USER BLOG
+router.put("/update-user-blog/:id", auth, blogsController.updateUserBlog);
 
 //DELETE BLOG *DONE*
-router.delete("/delete-single/:id", blogsController.deleteOneById);
+router.delete("/delete-single/:id", auth, blogsController.deleteOneById);
+
+//DELETE USER BLOG *DONE*
+router.delete("/delete-user-blog/:id", auth, blogsController.deleteUserBlog);
 
 //DELETE MULTIPLE BLOGS *DONE*
-router.delete("/delete-all", blogsController.deleteAllBlogs);
+router.delete("/delete-all", auth, blogsController.deleteAllBlogs);
+
+//DELETE ALL USER BLOGS *DONE*
+router.delete("/delete-user-blogs", auth, blogsController.deleteAllUserBlogs);
 
 module.exports = router;

@@ -93,7 +93,7 @@ let findUserBlog = async (req, res) => {
 
     res.json({
       success: true,
-      blog: blog,
+      blogs: blog,
     });
   } catch (error) {
     console.log(error);
@@ -131,16 +131,16 @@ let deleteUserBlog = async (req, res) => {
       });
     }
 
-    const user = await User.findById(req.user._id);
+    // const user = await User.findById(req.user._id);
 
-    if (!user) {
+    if (!req.user) {
       res.status(401).json({
         success: false,
         message: "User could not be found!",
       });
     }
 
-    if (user._id.toString() !== blogToDelete.user.toString()) {
+    if (req.user._id.toString() !== blogToDelete.user.toString()) {
       res.status(401).json({
         success: false,
         message: "You are not authorized to update this blog!",
@@ -233,57 +233,57 @@ let updateUserBlog = async (req, res) => {
       });
     }
 
-    const user = await User.findById(req.user._id);
+    // const user = await User.findById(req.user._id);
 
-    if (!user) {
+    if (!req.user) {
       res.status(401).json({
         success: false,
         message: "User could not be found!",
       });
     }
 
-    if (user._id.toString() !== originalBlog.user.toString()) {
+    let updatedBlog = {};
+
+    if (req.body.title === undefined) {
+      updatedBlog.title = originalBlog.title;
+    } else {
+      updatedBlog.title = req.body.title;
+    }
+
+    if (req.body.text === undefined) {
+      updatedBlog.text = originalBlog.text;
+    } else {
+      updatedBlog.text = req.body.text;
+    }
+
+    if (req.body.author === undefined) {
+      updatedBlog.author = originalBlog.author;
+    } else {
+      updatedBlog.author = req.body.author;
+    }
+
+    if (req.body.year === undefined) {
+      updatedBlog.year = originalBlog.year;
+    } else {
+      updatedBlog.year = req.body.year;
+    }
+
+    if (req.body.categories === undefined) {
+      updatedBlog.categories = originalBlog.categories;
+    } else {
+      updatedBlog.categories = req.body.categories;
+    }
+
+    updatedBlog.id = originalBlog.id;
+    updatedBlog.createdAt = originalBlog.createdAt;
+    updatedBlog.updatedAt = new Date();
+
+    if (req.user._id.toString() !== originalBlog.user.toString()) {
       res.status(401).json({
         success: false,
         message: "You are not authorized to update this blog!",
       });
     } else {
-      let updatedBlog = {};
-
-      if (req.body.title === undefined) {
-        updatedBlog.title = originalBlog.title;
-      } else {
-        updatedBlog.title = req.body.title;
-      }
-
-      if (req.body.text === undefined) {
-        updatedBlog.text = originalBlog.text;
-      } else {
-        updatedBlog.text = req.body.text;
-      }
-
-      if (req.body.author === undefined) {
-        updatedBlog.author = originalBlog.author;
-      } else {
-        updatedBlog.author = req.body.author;
-      }
-
-      if (req.body.year === undefined) {
-        updatedBlog.year = originalBlog.year;
-      } else {
-        updatedBlog.year = req.body.year;
-      }
-
-      if (req.body.categories === undefined) {
-        updatedBlog.categories = originalBlog.categories;
-      } else {
-        updatedBlog.categories = req.body.categories;
-      }
-
-      updatedBlog.id = originalBlog.id;
-      updatedBlog.createdAt = originalBlog.createdAt;
-      updatedBlog.updatedAt = new Date();
-
       await Blog.updateOne(originalBlog, updatedBlog);
 
       res.json({

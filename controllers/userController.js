@@ -62,6 +62,8 @@ const registerUser = async (req, res) => {
         return res.status(400).json({
           success: false,
           message: "Passwords do not match",
+          password: password,
+          confirmPassword: confirmPassword,
         });
       } else {
         const hashedPassword = await bcrypt.hash(password, 10);
@@ -168,7 +170,9 @@ const loginUser = async (req, res) => {
       success: true,
       id: user.id,
       firstName: user.firstName,
+      lastName: user.lastName,
       email: user.email,
+      scope: user.scope,
       _id: user._id,
       token: generateToken(user._id),
     });

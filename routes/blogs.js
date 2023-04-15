@@ -59,7 +59,7 @@ router.get("/many/:title", async (req, res) => {
 router.post("/create-one", auth, blogsController.createOneBlog); /////////////////////////
 
 //UPDATE A BLOG
-router.put("/update-single/:id", auth, blogsController.updateOneById);
+router.put("/update-single/:id", blogsController.updateOneById);
 
 //UPDATE USER BLOG
 router.put("/update-user-blog/:id", auth, blogsController.updateUserBlog); /////////////////////////
